@@ -1,0 +1,64 @@
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+ language={},
+ keywordstyle=\bfseries\ttfamily\color[rgb]{0,0,1},
+ identifierstyle=\ttfamily,
+ commentstyle=\color[rgb]{0.133,0.545,0.133},
+ stringstyle=\ttfamily\color[rgb]{0.627,0.126,0.941},
+ showstringspaces=false,
+ basicstyle=\scriptsize,
+ numberstyle=\tiny,
+ numbers=none,
+ stepnumber=1,
+ numbersep=10pt,
+ tabsize=2,
+ breaklines=true,
+ prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+ breakatwhitespace=false,
+ aboveskip={0.5\baselineskip},
+ columns=fixed,
+ upquote=true,
+ extendedchars=true,
+ breakautoindent=false,
+ frame=single,
+ backgroundcolor=\color{lbcolor},
+ literate={`}{\textasciigrave}{1}
+}
+
+% \lstset {
+%     language={},                  % language code
+%     basicstyle=\footnotesize,      % font size
+%     numbers=none,                  % where to put line numbers
+%     numberstyle=\footnotesize,     % numbers size
+%     numbersep=5pt,                 % how far the line numbers are from the code
+%     showspaces=false,                          % show spaces (with underscores)
+%     showstringspaces=false,            % underline spaces within strings
+%     showtabs=false,                            % show tabs using underscores
+%     frame=single,                  % adds a frame around the code
+%     tabsize=4,                     % default tabsize
+%     breaklines=true,                  % automatic line breaking
+%     columns=fullflexible,
+%     breakautoindent=false,
+%     framerule=1pt,
+%     xleftmargin=0pt,
+%     xrightmargin=0pt,
+%     breakindent=0pt,
+%     resetmargins=true,
+%     backgroundcolor=\color{codebgcolor},
+% }
+
+\definecolor{codebgcolor}{rgb}{0.95,0.95,0.95}
+
+\definecolor{sajatzold}{RGB}{0,105,0}
+
+\newcommand{\lstbg}[3][0pt]{{\fboxsep#1\colorbox{#2}{\strut #3}}}
+
+\lstdefinelanguage{diff}{
+  basicstyle=\ttfamily\footnotesize,
+  morecomment=[f][\lstbg{red!20}]-,
+  morecomment=[f][\lstbg{green!20}]+,
+  morecomment=[f][\textit]{@@},
+  %morecomment=[f][\textit]{---},
+  %morecomment=[f][\textit]{+++},
+}
