@@ -40,6 +40,8 @@
 %A fejléc láblécek kialakításához:
 \usepackage{fancyhdr}
 
+\usepackage{fancybox,framed}
+
 % definecolor
 \usepackage{xcolor}
 
@@ -456,7 +458,7 @@ A kutatás során a legnagyobb szerepet az automatizált kiértékelõnk játszotta.
 A generálás a GPT legújabb elérhetõ modelljével történt, a legfrissebb GPT-4 Turbo-t használtuk.
 Nagyban megkönnyítette az adathalmazunkon végzett mérések folyamatát, hiszen a projektenként szétbontott kontextusszeletek és a projektek elérési útvonalának segítségével, a GPT API-val való kommunikáción át, 
 a generált válasz lefuttatása és az eredmény kiértékelése teljesen automatikus volt. 
-Ezen evaluálás egy néhány lépcsõs folyamatba foglalható.% A végleges változatunkban minden példa egyesével került feldolgozásra. 
+Ezen felmérés egy néhány lépcsõs folyamatba foglalható.% A végleges változatunkban minden példa egyesével került feldolgozásra. 
 
 \subsubsection{Kontextus legyártása}
 
@@ -493,14 +495,14 @@ Mind a két esethez három lehetséges érték társul.
 \end{itemize}
 
 A ~\ref{chap:results}. fejezetben tárgyalni fogunk néhány olyan esetrõl, ahol felmerült olyan helyzet, ahol ezek a visszajelzések önmagukban nem tartalmazzák a teljes tényszerû eredményt, 
-emiatt is volt fontos a következõ szekcióban tárgyalt emberi evaluálás. 
+emiatt is volt fontos a következõ szekcióban tárgyalt emberi felmérés. 
 
 \section{Manuális kiértékelés}
 \label{sec:methodology-maneval}
 
 A teljesen automatikus és szigorú validálás mellett gondoskodtunk a szubjektív, emberi kiértékelésérõl is a generált teszteknek.
 Az egységtesztek elkészítéséhez egy fejlesztõnek is rengeteg releváns háttérinformációval kell rendelkezzen már ahhoz is, hogy egyáltalán olyan tesztet készítsen egy adott programhoz, ami futtatható.
-Ezért döntöttünk úgy, hogy a tesztek hasznosságának felmérése érdekében megtekintjük az egyes tesztek felépítését és kézzel is elbíráljuk hasznosságát, szemantikai (és akár) általános szintaktikai helyességét.
+Ezért döntöttünk úgy, hogy a tesztek hasznosságának felmérése érdekében megtekintjük az egyes tesztek felépítését és kézzel is elbíráljuk szemantikai helyességét.
 
 Két esetre bontottuk a kézi kiértékelés véleményezését:
 \begin{itemize}
@@ -557,26 +559,128 @@ Tehát a 20 példa minden kontextus szintével történt futtatás, ami azt jelenti, h
 
 
 \section{Szintaktikai elemzés}
+\label{sec:syntax-check}
 
 A szintaktikai elemzés során arra voltunk kíváncsiak, hogy mindenféle emberi beavatkozás nélkül képes-e a GPT olyan egységteszt generálásra, amely univerzálisan megállja a helyét egy tesztkörnyezetben,
 annak függvényében, hogy a modell megkapta utasításként, az egyszerû Java nyelvi elemeket használjon a válasz során. Elõfordultak olyan esetek, ahol a futtató környezet extra jelölést igényelt a teszt lefuttatása 
-érdekében. Ezen kontextus hiánya miatt voltak olyan generálások, ahol maga a teszt az automatikus evaluálás során nem futott le, de a projekt fordítási folyamatába beletartozott.
+érdekében. Ezen kontextus hiánya miatt voltak olyan generálások, ahol maga a teszt az automatikus felmérés során nem futott le, de a projekt fordítási folyamatába beletartozott.
 Az utóbb említett tényezõ alapján az ilyen eseteket is elfogadtuk szintaktikailag helyes eredménynek. 
 
-Azokat az eseteket, ahol a sérülékeny és javított változat egyaránt 
-- hány százalékban volt forduló kód? kérdés megválaszolása
+Néhány futtatásnál, ahol a sérülékeny és javított változat egyaránt \textbf{FAILURE} választ produkált, nem feltétlen csak a teszt eredménye volt hibás. 
+Fennállt az esete annak a jelenségnek is, hogy maga a fordítás nem hiúsult meg, de a tesztben használt szimbólumok nem voltak elérhetõk a megfelelõ importálások nélkül, amiket a 
+modell esetleg elfelejtett, vagy egyszerûen nem is léteztek.
+Ezeket a manuális kiértékelés során ellenõriztük és felülbíráltuk.
+
+\begin{framed}
+  \noindent \textbf{RQ1: Hány százalékban volt forduló kód?}
+  
+  \noindent A felülbírált eseteket kivéve a statisztikából, \textbf{L0} és \textbf{L1} fokális kontextussal 11 esetben, azaz 55\%-ban szintaktikailag helyes kódot generált a GPT. 
+  Továbbá az \textbf{L2}-vel futó generálás 13, azaz 65\%-os és az \textbf{L3} 10, tehát 50\%-os arányban produkált pozitív eredményt. 
+\end{framed}
+
+
+
+%- hány százalékban volt forduló kód? kérdés megválaszolása
 
 \section{Szemantikai elemzés}
+\label{sec:semantic-check}
 
-- hány százalékban volt sikeres szintaktikai és szemantikai generálás? kérdés megválaszolása
+A szintaktikai elemzés önmagában nem elég ahhoz, hogy eldöntsük a generált tesztek helyességét.
+Ebben a szekcióban kizárólag azokat az eseteket vizsgáljuk, amelyek eleget tettek az automatikus validálás kritériumainak, azaz a javítás elõtti állapotra a teszt elbukott, (\textbf{FAILURE}), a javítás utáni állapot 
+során pedig sikeres futás történt (\textbf{SUCCESS}).
+Az összképet nézve ez összesen 9 alkalommal (15\%) történt meg.
+
+Ezek a generált tesztek, ha csak egy kicsit is, mindig eltérnek a hivatalos VUL4J adathalmazzal járó, példákban szereplõ egységtesztektõl.
+Ez arra enged következtetni, hogy a helyesen megoldott példák valószínûsíthetõen nem szerepeltek ebben a formában a GPT tanítási halmazában, amely tovább erõsíti a született eredmények ígéretességét.  
+
+Az eredmények védelme érdekében a kézi kiértékelés során ellenõriztük, hogy ezek a generálások valóban helyesek-e.
+
+\begin{framed}
+  \noindent \textbf{RQ2: Hány százalékban volt sikeres szintaktikai és szemantikai generálás?}
+  
+  \noindent Összesen 9 (15\%) generált teszt volt szemantikailag is helyes. Fokális kontextusszintek szerint az \textbf{L0}, \textbf{L2} és \textbf{L3} 2 (10\%), az \textbf{L1} érdekes módon 3 (15\%) pozitív eredményt
+  produkált. 
+\end{framed}
+
 
 \section{Kontextus hatása a pontosságra}
+\label{sec:affect-of-context}
 
-- hogyan befolyásolja a context a pontosságot? kérdés megválaszolása
+Habár a ~\ref{sec:semantic-check}. szekcióban szereplõ eredmények alapján a különbözõ szintû kontextusokra való futtatás nem mutatott különösebb elváltozást, néhány megállapítás született a kutatás során.
+Michele és munkatársai~\cite{focal_context} az esetek közel 40\%-ában pozitív eredményeket tudtak produkálni, 
+viszont mindezt egy BART alapú modellen, kódbázisú elõtanítással, amihez tartozott egy teszteset generálási finomhangolás.
+
+A manuális kiértékelés alapján megállapítható, hogy a modell sokkal tudatosabb, kevesebb hibalehetõséggel rendelkezõ tesztesetet ír a konstruktorok felépítésének tudatában.
+Például \textbf{L0}-t használva a GPT összekeverte a publikusan elérhetõ Java \textit{FileItem} osztályt a példában szereplõ \textit{DiskFileItem} osztállyal.
+A konstruktor ismertetésével az \textbf{L1}-ben már egy szintaktikailag megfelelõ tesztet generált a modell.
+
+\begin{lstlisting}[caption={Az L0-ban szereplõ teszt kódja}, captionpos=b, breaklines=true]
+  ...
+  @Before
+  public void setUp() {
+      factory = new DiskFileItemFactory();
+  }
+  @Test(expected = IOException.class)
+  public void testReadObjectWithInvalidRepositoryPath() throws Exception {
+      ...
+      File invalidRepository = new File("/some/repository\0");
+      diskFileItem.setRepository(invalidRepository);
+      ...
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Az L1-ben szereplõ teszt kódja}, captionpos=b, breaklines=true]
+  ...
+  @Before
+  public void setUp() {
+      // Set up a valid repository directory for DiskFileItem
+      repository = new File(TEMP_DIR, "diskFileItemTest");
+      repository.mkdir();
+  
+      diskFileItem = new DiskFileItem(FIELD_NAME, CONTENT_TYPE, IS_FORM_FIELD, FILE_NAME, SIZE_THRESHOLD, repository);
+  }
+  ...
+\end{lstlisting}
+
+\newpage
+
+Az ~\ref{sec:syntax-check}. szakaszban tárgyalt eredmények alapján a legjobban teljesítõ kontextusszint az \textbf{L2} volt, amely 13 szintaktikailag megfelelõ generálást produkált.
+
+\begin{framed}
+  \noindent \textbf{RQ3: Hogyan befolyásolja a kontextus a generálás pontosságát?}
+  
+  \noindent A tesztek szubjektív kiértékelései alapján bizonyos mennyiségû extra kontextus hogyan segít a modellnek a feladat precízebb megoldásában. Az \textbf{L0} kontextusszint használatakor
+  9 esetben (45\%) nem ítéltük szemantikailag hasznosnak a tesztet, \textbf{L1} esetén 8 esetben (40\%), \textbf{L2} esetén 5 (25\%), \textbf{L3}-ban pedig 7 alkalommal (35\%).
+
+  \noindent Eredményeink jól mutatják, hogy egy bizonyos szintig látványos javuláshoz vezet a hozzáadott kódkontextus.
+   
+\end{framed}
 
 \section{A generálás szubjektív hasznossága}
 
-- a generált tesztek (szubjektívan) használhatók? kérdés megválaszolása
+%- a generált tesztek (szubjektívan) használhatók? kérdés megválaszolása
+A tesztek szubjektív használhatóságánál a fõbb értékelési szempontok a következõk voltak:
+
+\begin{itemize}
+  \item A generált teszt releváns a példában levõ sérülékeny kódhoz és annak javításához.
+  \item Azt a metódust teszteli, ami a modell feladataként lett meghatározva.
+  \item Legfeljebb minimális emberi finomhangolással (például a megfelelõ csomagok importálásával) használható
+\end{itemize}
+
+TODO:
+-példa egy nem jó tesztre
+-példa egy jó tesztre
+
+\begin{framed}
+  \noindent \textbf{RQ4: Milyen a szubjektív használhatósága a generált teszteknek?}
+  
+  \noindent A fentebb tárgyalt szempontok alapján a generált tesztek 50\%-át hasznosnak ítéltük. Ezek egy fejlesztõ számára akár egy használható vázat tud biztosítani egy sérülékenységet tanúsító egységteszt
+  elkészítésében.
+
+  \noindent Eredményeink jól mutatják, hogy egy bizonyos szintig látványos javuláshoz vezet a hozzáadott kódkontextus.
+   
+\end{framed}
+
 
 \section{Egyéb tapasztalatok}
 
