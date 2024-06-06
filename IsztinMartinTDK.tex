@@ -11,8 +11,6 @@
 \documentclass[12pt]{report}
 
 \usepackage{url}
-\usepackage{listings}
-\lstset{captionpos=b}
 
 \usepackage{setspace}
 
@@ -29,6 +27,8 @@
 % A formai kovetelmenyekben megkövetelt Times betûtípus hasznalata:
 \usepackage{times}
 
+\usepackage{listings}
+\lstset{captionpos=b}
 
 \usepackage{setspace} % For controlling line spacing
 
@@ -75,7 +75,7 @@
 \voffset -1.5in
 \oddsidemargin 35mm
 \textwidth 150mm
-\topmargin 15mm
+\topmargin 25mm
 \headheight 10mm
 \headsep 5mm
 \textheight 237mm
@@ -242,28 +242,30 @@ társul egy azonosító is, amely egy adott sérülékenységet reprezentál. Ezen sérül
 
 A mára már szinte bárkinek elérhetõ nagy nyelvi modellek széleskörûen elterjedtek produktivitásnövelõ technológiaként és a modellek által nyújtott lehetõségek miatt 
 a szoftverfejlesztés számos területén szintén használják.
-Számos kutatás számol be a feltörekvõ technológia automatikus programjavító képességeirõl, viszont az ezt próbáratevõ egységtesztek generálásáról kevés információt tudunk.
+Számos kutatás számol be a feltörekvõ technológia automatikus programjavító képességeirõl, viszont az ezt próbára tevõ egységtesztek generálásáról kevés információt tudunk.
 
 % ide mondjuk vul4j átvezetés
 A dolgozat célja a gyakorlatban felismert sebezhetõségekhez való egységteszt generálás, ezért a kiértékelés során a VUL4J~\cite{vul4j} projektgyûjtemény részhalmazát használtuk, amely számos Java nyelven íródott valós rendszer sérülékenységeirõl
 tartalmaz információkat, többek között a sérülékenység javítását, a sérülékenységhez tartozó CVE és többnyire CWE azonosítót.
-További elõnyei az adathalmaznak, hogy a biztosított környezettel könnyedén lehet alternálni a a projekt sérülékeny és javított változatai között, 
+További elõnyei az adathalmaznak, hogy a biztosított környezettel könnyedén lehet alternálni a projekt sérülékeny és javított változatai között, 
 elérhetõk a sérülékenység javításával alkalmazott változtatások és a projektben eredetileg használt egységtesztek is. 
 
 A kiértékeléshez használt részhalmazunk 20 olyan példát tartalmaz, amelyet igyekeztünk úgy kiválasztani, hogy minél több sérülékenység fajtát lefedjen.
 Minden példát fokális kontextusokra bontottunk~\cite{focal_context}, amely négy szintbõl állt (0-3).
-A kutatás során az egyik legismertebbek nyelvi modellt használtuk, az OpenAI cég generatív elõtanított traszformer modellje, a GPT-t, ezen belül is a legfrissebb GPT-4 Turbo változatát.
-A bemenetként adott szöveghez (promptoláshoz) kizárólag egy szerepet (szerepjáték keretein belül, itt most a modell egy senior szoftvertesztelõ) és a rendelkezésre álló kódot adtuk át. 
-Az eredmények osztályozása két részre különíthetõ. Elõször egy automatizált környezetben végeztük el a kontextus legyártását, promptolást, a kapott válasz feldolgozását és a kiértékelését, aztán kézzel is 
-felülbíráltuk a generálások szubjektív használhatóságát.
+A kutatás során az egyik legismertebbek nyelvi modellt használtuk, az OpenAI cég generatív elõtanított transzformer modelljét, a GPT-t, ezen belül is a legfrissebb GPT-4 Turbo változatát.
+A bemenetként adott szöveghez (prompthoz) kizárólag egy szerepet 
+(ami lehetõvé teszi az LLM számára, hogy pontosabb, kontextusnak megfelelõ összhangban álló válaszokat adjon, itt most a modell egy senior szoftvertesztelõ) 
+és a rendelkezésre álló kódot adtuk át. 
+Az eredmények osztályozása két részre különíthetõ. Elõször egy automatizált környezetben végeztük el a kontextus legyártását, promptolást, a kapott válasz feldolgozását és a kiértékelését, ezt követõen kézzel is 
+felülbíráltuk a generált kódok szubjektív használhatóságát.
 
 A kutatás a következõ kérdésekre keresi a választ:
 
 \begin{itemize}
-\item RQ1: Hány százalékban kaptunk szintaktikailag helyes kódot?
-\item RQ2: Hány százalékban kaptunk szemantikailag is helyes kódot?
-\item RQ3: Hogyan befolyásolja a kontextus a generálás pontosságát?
-\item RQ4: Milyen a szubjektív használhatósága a generált teszteknek?
+\item \textbf{RQ1}: Hány százalékban kaptunk szintaktikailag helyes kódot?
+\item \textbf{RQ2}: Hány százalékban kaptunk szemantikailag is helyes kódot?
+\item \textbf{RQ3}: Milyen a szubjektív használhatósága a generált teszteknek?
+\item \textbf{RQ4}: Hogyan befolyásolja a kontextus a generálás pontosságát?
 \end{itemize}
 
 Eredményeink azt mutatják, hogy a GPT domain-specifikus elõtanítás nélkül is szintaktikailag korrekt teszteseteket generál az esetek 50\%-ában, amely bíztató eredmény annak tudatában, hogy semmilyen
@@ -315,13 +317,13 @@ de mi javítások automatizálása helyett már létezõ javítások helyességét szeretné
 \section{Nagy nyelvi modellek a teszteset generálásban}
 
 Egy tanulmány statikus metrikákat alkalmazva finomhangolta a modelleket, a magas minõségû egységtesztek generálására~\cite{03}, miszerint egy alap modell 17\%-ban szintaktikailag hibás, 
-31\%-ban állítás (assertion) nélküli tesztet generál és az esetek 37\%-ában nem hívja meg a tesztelendõ metódust. Az erõsítéses tanítás eredményeként felügyelt finomhangolással és az RLSQM 
+31\%-ban állítás (assertion) nélküli tesztet generál és az esetek 37\%-ában nem hívja meg a tesztelendõ metódust. A megerõsítéses tanítás eredményeként felügyelt finomhangolással és az RLSQM 
 (Reinforcement Learning from Static Quality Metrics) alkalmazása után ezek a számok lecsökkentek 1\%, 5\% és 10\% környéki értékekre. A finomhangolás során, hozzánk hasonlóan dinamikus kontextushosszt használtak, 
 ami akár az egész fájl szövege volt, egy egész osztály, csak a metódus fejlécek, vagy csak a metódus maga.
 
 Michele Tufano és csapata szintén különbözõ fokális kontextusszintekkel kísérleteztek az egységteszt generálás~\cite{focal_context} promptolása során. Ez a megközelítés sokkal hasonlóbb ahhoz az átadott dinamikus kontextushoz, 
 amit mi választottunk. Kezdve kizárólag a fokális metódustól, hozzáadva szintenként az osztály nevét, a konstruktor fejléceit, a metódusok fejléceit és végül az osztály mezõit.
-A használt modell tanítása progresszíven történt. Történt egy angol nyelvû elõtanítés, utána egy kódbázisú, végül egy teszteset generáláshoz kapcsolódó finomhangolás.
+A használt modell tanítása progresszíven történt. Történt egy angol nyelvû elõtanítás, utána egy kódbázisú, végül egy teszteset generáláshoz kapcsolódó finomhangolás.
 A generálás egy fordítási folyamatnak van értelmezve, fokális kontextusról tesztesetre.
 
 Egy empirikus tanulmányban szintén új kutatási dimenziót képezett a kontextus hatása a teszt generálására vonatkozóan, habár itt a kontextus máshogy játszik szerepet. A különbözõ szinteket a Java dokumentáció 
@@ -335,13 +337,13 @@ Egy Meta cég által kiállított tanulmányban~\cite{07} nem generálnak konkrét "nye
 a modell ajánlásai késõbb 73\%-ban elfogadottnak minõsültek a fejlesztõk által.
 
 Alok Mathur és csapata olyan megközelítést alkalmazott a T5 és GPT-3 modellekkel, hogy kizárólag teszt bemeneteket generálnak és/vagy releváns természetes szöveges leírást~\cite{10}.
-A fejlesztõk leírnak néhány peremfeltételt vagy követelményeket és a model kimenete releváns tesztesetek lesznek, amik kiértékelhetõk a rendszer megfelelõ végrehajtájtási útvonalaihoz.
+A fejlesztõk leírnak néhány peremfeltételt vagy követelményeket és a modell kimenete releváns tesztesetek lesznek, amik kiértékelhetõk a rendszer megfelelõ végrehajtási útvonalaihoz.
 
 Egy nagy nyelvi modellekkel való szoftvertesztelésre specializált kutatási felmérés~\cite{08} alapján senki se gondolkodott még az általunk használt irányban, bemeneti formátum szempontjából.
 Kizárólag a hibás függvényt adják át, elõ- vagy utótagot, vagy leírást a javítás, vagy teszt generálásához, de senki sem próbálkozott mind a hibás és a javított kód átadásával a tesztgeneráláshoz. 
 A Sugmin Kang és társai által kiállított tanulmányban~\cite{085} szereplõ bemeneti formátum a hiba leírását adja meg a teszteset generáláshoz.
 
-Habár mi is teszt eseteket generálunk, a fentiekkel szemben a mi kutatásunk nem csak egy adott funkcionalitás tesztelését célozza a nagyobb lefedettség vagy a jobb olvashatóság érdekében, 
+Habár mi is teszt eseteket generálunk, a fentiekkel szemben a mi kutatásunk nem csak egy adott funkcionalitás tesztelését célozza a nagyobb lefedettség érdekében, 
 hanem egy adott sérülékenység elõtte/utána állapotai alapján próbál kimondottan a sérülékenységet bizonyító tesztesetet elõállítani, ami az sérülékeny állapoton hibát jelez, míg a javított változaton sikeresen lefut.
 
 
@@ -362,6 +364,13 @@ A mi kutatásunk is ebben a metszetben helyezkedik el, de a fentiekkel szemben mi
 
 A kutatásunk folyamata öt lépésre osztható. Elsõsorban kigyûjtöttünk 20 példát a kiértékeléshez, ezután a sérülékeny metódussal rendelkezõ osztályokat felbontottuk fokális kontextusszeletekre.
 Létrehoztunk egy promptot, amelyekbe a kiértékelés során beleágyazódott a megfelelõ szintû kódkontextus. Lefuttattuk a többlépcsõs kiértékelõ szkriptet, végül manuálisan átvizsgáltuk a kiértékelés eredményeit. 
+
+\begin{figure}[!hbp]
+  \label{fig:methodology}
+  \centering
+  \includegraphics[width=0.45\textwidth,natwidth=1195,natheight=1850]{graph/martin_method.pdf}
+  \caption{A módszertan ábrázolása}
+\end{figure}
 
 \section{Adatok kigyûjtése}
 \label{sec:methodology-data}
@@ -386,6 +395,8 @@ Az egységteszt generálásához, a megfelelõ mértékû kontextus definiálása elengedh
 Ehhez a kigyûjtött példák összes sebezhetõ osztályából kontextusdarabokat~\cite{focal_context} gyártottunk, amelyek segítségével az automatizált kiértékelés során könnyedén szabályozhattuk, hogy mekkora kontextussal szeretnénk az adott 
 mérést elvégezni. 
 
+\newpage
+
 Kisebb adathalmazokon való tesztelések után a szintek elosztásában a következõképp döntöttünk:
 \begin{itemize}
 \item \textbf{L0}: tartalmazza az osztály csomagdeklarációját, az osztály deklarációját és a sebezhetõ metódust.
@@ -399,7 +410,7 @@ A kiértékelés során minden szintbõl lezajlott egy futtatás.
 Ahogy az elõbb is említettem, a generáláshoz megfelelõ méretû és elegendõen specifikus kontextusra van szükségünk. 
 Elsõ lépésként promptolási referenciákat gyûjtöttünk elõzetes releváns szakirodalmakból~\cite{08,09}, majd a promptolással való kísérletezés következett.
 
-Igyekeztünk minél optimálisabb és lényegretörõbb bemeneti szöveget definiálni, ezért a kísérleti futtatásokból kinyert tapasztalatok alapján formáltuk meg a végleges promptot.
+Igyekeztünk minél optimálisabb és lényegre törõbb bemeneti szöveget definiálni, ezért a kísérleti futtatásokból kinyert tapasztalatok alapján formáltuk meg a végleges promptot.
 
 
 A hivatalos OpenAI dokumentációja szerint\footnote{\url{https://platform.openai.com/docs/guides/gpt/chat-completions-api}} egy válasz generálása során, ha specifikálunk a GPT-nek saját szerepkört, 
@@ -418,7 +429,7 @@ adatokkal, ezt követõen pedig a javítást tartalmazó metódus, de ez már a kontext
 
 Végezetül érzelmi stimulációt alkalmazunk a modellen, amiben közöljük, hogy a feladat megoldása nagyon fontos számunkra. Ez az eljárás jobb eredményekhez vezet.~\cite{erzelmi_stimulacio}
 
-\newpage
+%\newpage
 
 A végsõ prompt, amellyel a kiértékelés összes példája lezajlott a következõképp állt össze:
 
@@ -454,7 +465,7 @@ Három elfogadást megtagadó helyzet állt fent, amelyekhez társult prompt:
 \end{itemize}
 
 
-\newpage
+%\newpage
 
 
 \section{Kiértékelõ környezet}
@@ -469,7 +480,7 @@ Ezen felmérés egy néhány lépcsõs folyamatba foglalható.% A végleges változatunkb
 \subsubsection{Kontextus legyártása}
 
 Elsõsorban az elõre definiált fokális kontextusszint megadásával megépítette azt a Java fájlt, 
-amely szintaktikailag is helyesen struktúrálva tartalmazta a szintnek megfelelõ mennyiségû adatot az adott sérülékenységrõl.
+amely szintaktikailag is helyesen strukturálva tartalmazta a szintnek megfelelõ mennyiségû adatot az adott sérülékenységrõl.
 
 \subsubsection{Kommunikáció a GPT-vel}
 A legyártott Java fájl került átadásra a GPT API-val kommunikáló komponensnek, amely a fentebb kifejtett promptot tette egésszé.
@@ -507,6 +518,7 @@ emiatt is volt fontos a következõ szekcióban tárgyalt emberi felmérés.
 \label{sec:methodology-maneval}
 
 A teljesen automatikus és szigorú validálás mellett gondoskodtunk a szubjektív, emberi kiértékelésérõl is a generált teszteknek.
+A kézi kiértékelés során több fejlesztõ is dolgozott a validáción, az emberi hibák csökkentésének érdekében.
 Az egységtesztek elkészítéséhez egy fejlesztõnek is rengeteg releváns háttérinformációval kell rendelkezzen már ahhoz is, hogy egyáltalán olyan tesztet készítsen egy adott programhoz, ami futtatható.
 Ezért döntöttünk úgy, hogy a tesztek hasznosságának felmérése érdekében megtekintjük az egyes tesztek felépítését és kézzel is elbíráljuk szemantikai helyességét.
 
@@ -558,7 +570,7 @@ Természetesen a szigorú validáláskor helyes kimenetet produkáló eseteket is elle
 
 \chapter{Eredmények}
 \label{chap:results}
-\begin{spacing}{1.4}
+\begin{spacing}{1.5}
 A ~\ref{sec:methodology-evalenv}. szakaszban említettük, hogy minden példára, akár több mint négyszer, történt generálás a modell által és mindig az utolsó legjobb eredményt vettük figyelembe. 
 A kiértékelés részletes eredményeit a ~\ref{tab:sum}. táblázat ábrázolja. Szintén említésre került, hogy az eredmények automatikus és manuális, kézi validáláson is átestek. 
 Összesen 80 darab eredménypár született az automata kiértékelés során, ami magába foglal változó mennyiségû visszakérdezéses generálást is.
@@ -568,9 +580,10 @@ A kiértékelés részletes eredményeit a ~\ref{tab:sum}. táblázat ábrázolja. Szinté
 \section{Szintaktikai elemzés}
 \label{sec:syntax-check}
 
-A szintaktikai elemzés során arra voltunk kíváncsiak, hogy mindenféle emberi beavatkozás nélkül képes-e a GPT olyan egységteszt generálásra, amely univerzálisan megállja a helyét egy tesztkörnyezetben,
-annak függvényében, hogy a modell megkapta utasításként, az egyszerû Java nyelvi elemeket használjon a válasz során. Elõfordultak olyan esetek, ahol a futtató környezet extra jelölést igényelt a teszt lefuttatása 
-érdekében. Ezen kontextus hiánya miatt voltak olyan generálások, ahol maga a teszt az automatikus felmérés során nem futott le, de a projekt fordítási folyamatába beletartozott.
+A szintaktikai elemzés során az volt a kérdés, hogy a GPT képes-e mindenféle emberi beavatkozás nélkül olyan egységtesztet generálni, 
+amely univerzálisan alkalmazható egy tesztkörnyezetben, feltéve, hogy a modellnek az utasítás részeként egyszerû Java nyelvi elemek használatát kértük a válaszában.
+Elõfordultak olyan esetek, ahol a futtató környezet extra jelölést igényelt a teszt lefuttatása érdekében. 
+Ezen kontextus hiánya miatt voltak olyan generálások, ahol a tesztet a futtató környezet nem érzékelte egységtesztként, így az nem futott le, de a projekt fordítási folyamatába beletartozott.
 Az utóbb említett tényezõ alapján az ilyen eseteket is elfogadtuk szintaktikailag helyes eredménynek. 
 
 Néhány futtatásnál, ahol a sérülékeny és javított változat egyaránt \textbf{FAILURE} választ produkált, nem feltétlen csak a teszt eredménye volt hibás. 
@@ -609,6 +622,116 @@ Az eredmények védelme érdekében a kézi kiértékelés során ellenõriztük, hogy ezek
   produkált. 
 \end{framed}
 
+\section{A generálás szubjektív hasznossága}
+
+%- a generált tesztek (szubjektívan) használhatók? kérdés megválaszolása
+A tesztek szubjektív használhatóságánál a fõbb értékelési szempontok a következõk voltak:
+
+\begin{itemize}
+  \item A generált teszt releváns a példában levõ sérülékeny kódhoz és annak javításához.
+  \item Azt a metódust teszteli, ami a modell feladataként lett meghatározva.
+  \item Legfeljebb minimális emberi finomhangolással (például a megfelelõ csomagok importálásával) használható.
+  \item Nem próbálja meg felülírni a tesztelendõ metódust saját kóddal.
+\end{itemize}
+
+%TODO:
+%-példa egy nem jó tesztre
+%-példa egy jó tesztre
+
+A szubjektív kiértékelés során nem elfogadott példa, az \textbf{L0} futtatás során a \textit{VUL4J-24} példához olyan tesztet generált a modell, 
+amelyben már saját maga próbálta meghatározni a tesztelendõ osztály metódusának viselkedését, ahelyett, hogy a teszten javított volna a hiba és az elõtte ismertetett kontextus alapján.
+Ebben a jelenségben a visszakérdezéses generálás is szerepet játszik, errõl a ~\ref{sec:misc}. szakaszban fogunk tárgyalni.
+
+Továbbá, néhány esetben a kód értelmezésével is akadtak problémái a modellnek. Az \textbf{L1}-es generálásban a \textit{VUL4J-12} példát félreértette, 
+a példában szereplõ javítás egy végtelen ciklus kiküszöbölését tartalmazza, ellenben a teszt egy \textit{long} típusú számértéket \textit{integerre} való típuskasztolás segítségével akar összehasonlítani egy másik integerrel.
+Azonban ezek sem véletlenszerû utasítások, hiszen relevánsak a promptban specifikált kódhoz, viszont a sérülékenység teszteléséhez nem tesznek eleget.%, így a manuális kiértékelés során ezt az esetet nem ítéltük hasznosnak.
+
+\begin{lstlisting}[caption={Az L1 VUL4J-12 példára generált teszteset részlete}, captionpos=b, breaklines=true]
+  @Test
+  public void testExtendMethodVulnerability() throws Exception {
+      ...
+      JpegDecoder jpegDecoder = new JpegDecoder();
+      // Call the private extend method using reflection
+      int result = (Integer) extendMethod.invoke(jpegDecoder, v, t);
+      // Hypothetical patched logic that accounts for integer overflow
+      long expected = ((long) v) + ((v < (1 << (t - 1))) ? ((-1L) << t) + 1 : 0);
+      int expectedInt = (int) expected;
+      assertEquals("The extend method should behave as expected after the patch", expectedInt, result);
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[caption={A VUL4J-12 példához tartozó javítás},label={lst:vul4j7}, captionpos=b, keepspaces=true, language=diff]
+  ...
+  int vt = (1 << (t - 1));
+-  while (v < vt) {
++  if (v < vt) {
+      vt = (-1 << t) + 1;
+      v += vt;
+  }
+  ...
+  \end{lstlisting}
+
+Rengeteg hasznos teszt került generálásra, erre egy példa az \textbf{L3}-ban található \textit{VUL4J-5} generálása.
+
+\begin{lstlisting}[caption={Az L3 VUL4J-5 példára generált teszteset lényeges részei}, captionpos=b, breaklines=true]
+  @Test
+  public void testExpandVulnerability() {
+      ...
+      // Vulnerable entry trying to write outside of target directory
+      ArchiveEntry vulnerableEntry = new ArchiveEntry("../outsidetarget.txt", false);
+      ...
+      try {
+          // This should fail before patch and pass after patch
+          expander.expand(supplier, writer, targetDirectory);
+          fail("The test should throw an IOException before the patch as it attempts to expand outside of the target directory.");
+      } catch (IOException e) {
+          // Expected exception
+          String expectedMessage = "expanding ../outsidetarget.txt would create file outside of " + targetDirectory;
+          assertEquals(expectedMessage, e.getMessage());
+      }
+  }
+\end{lstlisting}
+
+Habár szintaktikailag nem megfelelõ a teszt, ennek ellenére kifejezetten jól értelmezte a modell a 
+feladatát és valóban letesztelte a javítás jelenlétét. A sérülékeny kódban lehetõség volt egy útvonal átjárás sérülékenység kihasználására, miszerint a "../fájl" bemenet átadása visszalép egy szintet a mappaszerkezetben,
+ami már nem biztos, hogy a working directory része, ezzel veszélyeztetve rengeteg olyan fájlt, amihez a szerver környezetén kívül senkinek sem lenne külsõ hozzáférése.
+
+Másik eset egy hasznos generálásra, az \textbf{L2}-ben szereplõ \textit{VUL4J-52} példához készült teszt.
+A kódban fennálló \textit{helytelen jogosultságkezelés} sérülékenység javítása érdekében implementáltak egy metódust, 
+ami a sandbox környezetbe bekerülõ kódban megtiltja a \textit{finalize} függvény felülírását egy \textit{SecurityException} kivételdobás kíséretében.
+
+\begin{lstlisting}[caption={Az L2 VUL4J-52 példára generált teszteset}, captionpos=b, breaklines=true]
+  @Test
+  public void testForbidIfFinalizer_withUnsafeFinalizeMethod_ShouldThrowSecurityException() {
+      thrown.expect(SecurityException.class);
+
+      MethodNode unsafeFinalizeMethod = new MethodNode(
+              "finalize",
+              Opcodes.ACC_PUBLIC,
+              ClassHelper.VOID_TYPE,
+              Parameter.EMPTY_ARRAY,
+              ClassNode.EMPTY_ARRAY,
+              null
+      );
+
+      classNode.addMethod(unsafeFinalizeMethod);
+
+      transformer.transform(sourceUnit, null, classNode);
+  }
+\end{lstlisting}
+
+A generált teszt valóban leteszteli azt az eshetõséget, hogy a környezetbe egy ilyen függvény kerül, és el is várja a megfelelõ kivétel keletkezését, ami 
+a sérülékeny kódban nem fog megtörténni, ellenben a javítottal.
+
+\begin{framed}
+  \noindent \textbf{RQ3: Milyen a szubjektív használhatósága a generált teszteknek?}
+  
+  \noindent A fentebb tárgyalt szempontok alapján a generált tesztek 50\%-át hasznosnak ítéltük. Ezek egy fejlesztõ számára akár egy használható vázat tud biztosítani egy sérülékenységet tanúsító egységteszt
+  elkészítésében.
+
+  \noindent Eredményeink jól mutatják, hogy egy bizonyos szintig látványos javuláshoz vezet a hozzáadott kódkontextus.
+   
+\end{framed}
 
 \section{Kontextus hatása a pontosságra}
 \label{sec:affect-of-context}
@@ -653,82 +776,23 @@ A konstruktor ismertetésével az \textbf{L1}-ben már egy szintaktikailag megfelel
 Az ~\ref{sec:syntax-check}. szakaszban tárgyalt eredmények alapján a legjobban teljesítõ kontextusszint az \textbf{L2} volt, amely 13 szintaktikailag megfelelõ generálást produkált.
 
 \begin{framed}
-  \noindent \textbf{RQ3: Hogyan befolyásolja a kontextus a generálás pontosságát?}
+  \noindent \textbf{RQ4: Hogyan befolyásolja a kontextus a generálás pontosságát?}
   
   \noindent A tesztek szubjektív kiértékelései alapján bizonyos mennyiségû extra kontextus hogyan segít a modellnek a feladat precízebb megoldásában. Az \textbf{L0} kontextusszint használatakor
-  9 esetben (45\%) nem ítéltük szemantikailag hasznosnak a tesztet, \textbf{L1} esetén 8 esetben (40\%), \textbf{L2} esetén 5 (25\%), \textbf{L3}-ban pedig 7 alkalommal (35\%).
-
-  \noindent Eredményeink jól mutatják, hogy egy bizonyos szintig látványos javuláshoz vezet a hozzáadott kódkontextus.
-   
-\end{framed}
-
-\section{A generálás szubjektív hasznossága}
-
-%- a generált tesztek (szubjektívan) használhatók? kérdés megválaszolása
-A tesztek szubjektív használhatóságánál a fõbb értékelési szempontok a következõk voltak:
-
-\begin{itemize}
-  \item A generált teszt releváns a példában levõ sérülékeny kódhoz és annak javításához.
-  \item Azt a metódust teszteli, ami a modell feladataként lett meghatározva.
-  \item Legfeljebb minimális emberi finomhangolással (például a megfelelõ csomagok importálásával) használható
-  \item Nem próbálja meg felülírni a tesztelendõ metódust saját kóddal
-\end{itemize}
-
-%TODO:
-%-példa egy nem jó tesztre
-%-példa egy jó tesztre
-
-A szubjektív kiértékelés során nem elfogadott példa, az \textbf{L0} futtatás során a \textit{VUL4J-24} példához olyan tesztet generált a modell, 
-amelyben már saját maga próbálta meghatározni a tesztelendõ osztály metódusának viselkedését, ahelyett, hogy a teszten javított volna a hiba és az elõtte ismertetett kontextus alapján.
-Ebben a jelenségben a visszakérdezéses generálás is szerepet játszik, errõl a ~\ref{sec:misc}. szakaszban fogunk tárgyalni.
-
-Továbbá, néhány esetben a kód értelmezésével is akadtak problémái a modellnek. Az \textbf{L1}-es generálásban a \textit{VUL4J-12} példát félreértette, 
-a példában szereplõ javítás egy végtelen ciklus kiküszöbölését tartalmazza, ellenben a teszt egy long típusú számértéket integerre való típuskasztolás segítségével akar összehasonlítani egy másik integerrel.
-Azonban ezek sem véletlenszerû utasítások, hiszen relevánsak a promptban specifikált kódhoz, viszont a sérülékenység teszteléséhez nem tesznek eleget.
-
-Rengeteg hasznos teszt került generálásra, erre egy példa az \textbf{L3}-ban található \textit{VUL4J-5} generálása.
-
-\begin{lstlisting}[caption={Az L3 VUL4J-5 példára generált teszteset lényeges részei}, captionpos=b, breaklines=true]
-  @Test
-  public void testExpandVulnerability() {
-      ...
-      // Vulnerable entry trying to write outside of target directory
-      ArchiveEntry vulnerableEntry = new ArchiveEntry("../outsidetarget.txt", false);
-      ...
-      try {
-          // This should fail before patch and pass after patch
-          expander.expand(supplier, writer, targetDirectory);
-          fail("The test should throw an IOException before the patch as it attempts to expand outside of the target directory.");
-      } catch (IOException e) {
-          // Expected exception
-          String expectedMessage = "expanding ../outsidetarget.txt would create file outside of " + targetDirectory;
-          assertEquals(expectedMessage, e.getMessage());
-      }
-  }
-\end{lstlisting}
-
-Habár szintaktikailag nem megfelelõ a teszt, ennek ellenére kifejezetten jól értelmezte a modell a 
-feladatát és valóban letesztelte a javítás jelenlétét. A sérülékeny kódban lehetõség volt egy útvonal átjárás sérülékenység kihasználására, miszerint a "../fájl" bemenet átadása visszalép egy szintet a mappaszerkezetben,
-ami már nem biztos, hogy a working directory része, ezzel veszélyeztetve rengeteg olyan fájlt, amihez a szerver környezetén kívül senkinek sem lenne külsõ hozzáférése.
-
-\begin{framed}
-  \noindent \textbf{RQ4: Milyen a szubjektív használhatósága a generált teszteknek?}
-  
-  \noindent A fentebb tárgyalt szempontok alapján a generált tesztek 50\%-át hasznosnak ítéltük. Ezek egy fejlesztõ számára akár egy használható vázat tud biztosítani egy sérülékenységet tanúsító egységteszt
-  elkészítésében.
+  11 esetben (55\%) ítéltük szemantikailag hasznosnak a tesztet, \textbf{L1} esetén 12 esetben (60\%), \textbf{L2} esetén 15 (75\%), \textbf{L3}-ban pedig 13 alkalommal (65\%).
 
   \noindent Eredményeink jól mutatják, hogy egy bizonyos szintig látványos javuláshoz vezet a hozzáadott kódkontextus.
    
 \end{framed}
 
 
-\section{Egyéb tapasztalatok}
+\section{Visszakérdezéssel kapcsolatos tapasztalatok}
 \label{sec:misc}
 
 %- milyen hatással volt a prompt
 %\subsubsection{Promptok hatása a generálásra} 
 
-\subsubsection{A visszakérdezés által generálással kapcsolatos észrevételek}
+%\subsubsection{A visszakérdezés által generálással kapcsolatos észrevételek}
 %- hogyan segített a visszakérdezés
 
 Mint már említettük, a megközelítésünk egyik pillére a modelltõl való visszakérdezés volt. Ez számos helyzetben segítette a generálás alakulását, hiszen a modell interaktívan visszanyerte az általa írt kódhoz 
@@ -737,8 +801,7 @@ Az \textbf{L2}-ben szereplõ \textit{VUL4J-77} példa, elsõ generálásra \textbf{FA
 A visszakapott kód a hiba alapján lett finomhangolva a GPT által, ez végül egy teljes, pozitív eredményt produkált.
 
 \begin{lstlisting}[caption={Az L2 VUL4J-77 példára generált válasz (részlet)}, captionpos=b, breaklines=true]
-  I apologize for the confusion. 
-  It's important to note that with the SafeConstructor, the YAML parser should not throw a SecurityException but rather a YAMLException, ConstructorException, or another related exception when encountering malicious YAML content since it won't be executing any unsafe operations that could potentially trigger a SecurityException.
+  It's important to note that with the SafeConstructor, the YAML parser should not throw a SecurityException but rather a YAMLException, ConstructorException, or another related exception when encountering malicious YAML content...
   ...
   @Test
     public void testReadYamlTreeVulnerability() {
@@ -750,7 +813,7 @@ A visszakapott kód a hiba alapján lett finomhangolva a GPT által, ez végül egy t
     ...
 \end{lstlisting}
 
-Néhány esetben azonban a modell teljesen elvesztette a fonalat, és a tesztek finomhangolását olyan irányba vitte, ami nem volt releváns a kódban szereplõ hiba kijavításához.
+Néhány esetben azonban a modell teljesen "elvesztette a fonalat", és a tesztek finomhangolását olyan irányba vitte, ami nem volt releváns a kódban szereplõ hiba kijavításához.
 Az \textbf{L1}-ben futtatott \textit{VUL4J-62} példához elõször létrehozott teszt még nem rendelkezik feladatkörbe nem illõ kód generálással.
 Fontos megjegyezni, hogy néhány példán való tesztfuttatáshoz szükséges lett volna, hogy a tesztosztály leszármazzon a TestCase osztályból, különben az ilyen projekteknél használt plugin nem ismerte fel a tesztet.
 Ennél a példánál is ez a szituáció állt fenn, ami azt jelenti, hogy a naplófájlok csupán annyi üzenetet tartalmaztak, hogy nem futott le egy teszt sem, így a buildelési folyamat sikeresen lezajlott.
@@ -769,7 +832,7 @@ A továbbiakban érdemes lehet más modelleket is vizsgálni, akár olyat is, ami kif
 Nem alkalmaztunk elõtanítást vagy érdemleges finomhangolást. 
 A ~\ref{sec:misc}. szakaszban tárgyalt inkonzisztenciák elkerülése érdekében célszerû lehetne Michele és társai~\cite{focal_context} mintájára egyes modelleket kód alapú, majd tesztgenerálási elõtanításban részesíteni.
 %-semmi extra adatot nem tartalmazott a prompt, csak a feladatot és a kódot
-A prompt szerkezetileg jól struktúrált volt, ám nem tartalmazott extra adatot és információt a javítás elõsegítéséhez.
+A prompt szerkezetileg jól strukturált volt, ám nem tartalmazott extra adatot és információt a javítás elõsegítéséhez.
 Érdemes lehet nagyobb hangsúlyt fektetni a prompt engineering részére is a jövõben, például a CWE információk promptba való integrálásával.
 
 %-kicsi adathalmaz
@@ -789,21 +852,23 @@ A GPT nemdeterminisztikus természetû, ezért az eredmények gyártása során sosem k
 \chapter{Konklúzió}
 
 %-nem haszontalan ez a cucc, a limitációkban leírt bõvítésekkel csak jobb lehet.
-Kutatásunk bemutatja a GPT-4 egységteszt generáló képességeit valós környezetben.
+Kutatásunk bemutatja a GPT-4 egységteszt generáló képességeit a sérülékenységek kontextusában, valós környezetben.
 Elõzetes irodalmakkal ellentétben, az általunk alkalmazott módszerben egymás mellé tesszük a sebezhetõ és a javított metódust, amely nagy nyelvi modellekkel történõ munka esetén nem megszokott eljárás.
 Eredményeink alapján látható, hogy a nagy nyelvi modellekkel történõ egységtesztek generálása tud hasznos segítséget adni a valós életbeli problémák megoldásához.
 
 Felméréseinkbõl a következõ megállapításokat tehetjük:
 
 \begin{enumerate}
-  \item A GPT-4 egységteszt generálási képessége elõtanítás nélkül közel sem tökéletes, de az eredmények alapján ígéretes
-  \item Ha nem történik szintaktikailag helyes generálás, jó eséllyel minimális emberi finomhangolással helyes tesztesetet tudunk képezni
-  \item A különbözõ mennyiségû információt hordozó kontextusszintek valóban hoznak változást a generálás minõségére
-  \item A visszakérdezések megfelelõ mennyiségû információval a hiba megoldásához, inkább a helyes irányba viszik a generálást, mintsem a rosszba  
+  \item A GPT-4 egységteszt generálási képessége elõtanítás nélkül közel sem tökéletes, de az eredmények alapján ígéretes.
+  \item Ha nem történik szintaktikailag helyes generálás, jó eséllyel minimális emberi finomhangolással helyes tesztesetet tudunk képezni.
+  \item A különbözõ mennyiségû információt hordozó kontextusszintek valóban hoznak változást a generálás minõségére.
+  %\item A visszakérdezések megfelelõ mennyiségû információval a hiba megoldásához, inkább a helyes irányba viszik a generálást, mintsem a rosszba.
+  \item A visszakérdezések, amelyek elegendõ információt tartalmaznak a hiba kijavításához, inkább a helyes irányba terelik a generálást, mint a rossz irányba.
 \end{enumerate}
 
-Összegzésként, a nagy nyelvi modellek által történõ egységteszt generálás egyáltalán nem haszontalan irány, azonban a teljesítmény javításához további kutatások szükségesek.
-A ~\ref{chap:lim}. fejezetben felsorolt célok megvalósításával is megkérdõjelezhetetlen a mégnagyobb siker. 
+Összegzésként, a nagy nyelvi modellek által történõ egységteszt generálás egyáltalán nem haszontalan irány, 
+azonban a teljesítmény javításához további kutatások szükségesek (például az ~\ref{chap:lim}. fejezetben felsorolt célok megvalósításával).
+%A ~\ref{chap:lim}. fejezetben felsorolt célok megvalósításával is megkérdõjelezhetetlen a mégnagyobb siker. 
 
 %% Az itrodalomjegyzek keszitheto a BibTeX segedprogrammal:
 %\bibliography{diploma}
