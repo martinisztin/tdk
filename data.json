@@ -1,0 +1,23 @@
+{
+    "VUL4J-5" : {"path": "src/test/java/org/apache/commons/compress/archivers/examples/", "test": "ExpanderTest.java"}, 
+    "VUL4J-10" : {"path": "src/test/java/org/apache/commons/fileupload/", "test": "DiskFileItemTest.java"}, 
+    "VUL4J-12" : {"path": "src/test/java/org/apache/commons/imaging/formats/jpeg/decoder/", "test": "JpegDecoderTest.java"},
+    "VUL4J-17" : {"path": "httpclient/src/test/java/org/apache/http/client/utils/", "test": "URIBuilderTest.java"},
+    "VUL4J-22" : {"path": "web/src/test/java/org/apache/shiro/web/util/", "test": "WebUtilsTest.java"},
+    "VUL4J-24" : {"path": "bundles/extensions/xss/src/test/java/org/apache/sling/xss/impl/", "test": "XSSAPIImplTest.java"},
+    "VUL4J-34" : {"path": "core/src/test/java/com/opensymphony/xwork2/interceptor/", "test": "I18nInterceptorTest.java"},
+    "VUL4J-41" : {"path": "src/test/java/org/codehaus/plexus/archiver/zip/", "test": "AbstractUnArchiverTest.java"},
+    "VUL4J-43" : {"path": "util/src/test/java/org/eclipse/rdf4j/common/io/", "test": "ZipUtilTest.Java"},
+    "VUL4J-44" : {"path": "src/test/java/org/owasp/esapi/codecs/", "test": "PercentCodecTest.java"},
+    "VUL4J-45" : {"path": "esigate-core/src/test/java/org/esigate/xml/", "test": "XsltRendererTest.java"},
+    "VUL4J-47" : {"path": "src/test/java/com/fasterxml/jackson/dataformat/xml/failing/", "test": "XmlFactoryTest.java"},
+    "VUL4J-48" : {"path": "src/test/java/org/primeframework/jwt/", "test": "JWTDecoderTest.java"},
+    "VUL4J-50" : {"path": "javamelody-core/src/test/java/net/bull/javamelody/", "test": "HtmlSessionInformationsReportTest.java"},
+    "VUL4J-52" : {"path": "src/test/java/org/kohsuke/groovy/sandbox/", "test": "SandBoxTransformerTest.java"},
+    "VUL4J-53" : {"path": "core/src/test/java/hudson/scheduler/", "test": "CronTabTest.java"},
+    "VUL4J-54" : {"path": "core/src/test/java/hudson/util/", "test": "XStream2Test.java"},
+    "VUL4J-57" : {"path": "src/test/java/org/jenkinsci/plugins/workflow/support/steps/build/", "test": "BuildTriggerStepExecutionTest.java"},
+    "VUL4J-62" : {"path": "enterprise/security/src/test/java/org/neo4j/server/security/enterprise/auth/integration/bolt/", "test": "LdapRealmTest.java"},
+    "VUL4J-77" : {"path": "modules/swagger-parser/src/test/java/io/swagger/parser/util/", "test": "DeserializationUtilsTest.java"}
+
+}
