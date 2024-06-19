@@ -1,3 +1,3 @@
-# TDK Paper src
+# TDK Collection Data
 
-Futtatáshoz használd a go.bat-ot.
+TODO: kiegészíteni 30 példával
